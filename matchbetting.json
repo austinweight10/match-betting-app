@@ -1,0 +1,28 @@
+ {
+    "one" : {
+        "odds1" : "1/2",
+        "odds2" :"2/3",
+        "odds3" : "3/4",
+        "amountBet" : "200",
+        "RecomendedBet" : "should up it as odds are good",
+        "finalBet1" : "30",
+        "finalBet2" : "10",
+        "fianlBet3" : "300",
+        "finalPayout1" : "0",
+        "finalPayout2" : "0",
+        "fianlPayout3" : "60"
+    },
+    "odds2" : {
+        "odds1" : "1/2",
+        "odds2" :"2/3",
+        "odds3" : "3/4",
+        "amountBet" : "200",
+        "RecomendedBet" : "should up it as odds are good",
+        "finalBet1" : "30",
+        "finalBet2" : "10",
+        "fianlBet3" : "300",
+        "finalPayout1" : "0",
+        "finalPayout2" : "0",
+        "fianlPayout3" : "60"
+    }
+}
