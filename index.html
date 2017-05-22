@@ -5,60 +5,38 @@
       <meta charset = "UTF-8">
       <title>React App</title>
    </head>
+
    <!-- <h1>I got loads of money!</h1> -->
    <!-- add more quoutes through the site from tv show for outputs -->
    <!-- add doc head  -->
    <!-- good name for match betting app -->
 
-
    <!-- add tc and disclamer this is not garenteed  -->
-
 
    <style>
    @import "matchbetting.min.css";
    </style>
 
    <div class="MB">
-       <h1>Match betting</h1>
+
+       <div class="MB__header">
+           <h1>Match betting</h1>
+           <p>into and disclamer</p>
+           <img scr="">
+       </div>
 
        <div class="MB__prev-res">
            <h2>Previous Results</h2>
        </div>
-       <button class="MB__prev-res__read-more">read more</button>
 
-       <div class="MB__input">
-
-           <h2>New Bet</h2>
-
-           <div>
-               <label>Odds for first bet</label>
-               <input class="MB__input__first-bet">
-           </div>
-
-           <div>
-               <label>Odds for second bet</label>
-               <input class="MB__input__second-bet">
-           </div>
-
-           <div>
-               <label>Odds for third bet</label>
-               <input class="MB__input__third-bet">
-           </div>
-
-           <div>
-               <label>Howw much you want to spend</label>
-               <input class="MB__input__ammount-bet">
-           </div>
-
-           <span class="MB__input__submit">Submit</span>
-       </div>
+       <div id="app" class="MB__input"></div>
 
        <div class="MB__recomendations">
            <h2>Predictions</h2>
+           <div id="MB__recomendations__predict"></div>
        </div>
    </div>
 
-   <div id = "app"></div>
    <script src="index.js"></script>
    <script src="https://code.jquery.com/jquery-3.1.0.js"
   integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
