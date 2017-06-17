@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
+import {collecResults} from "./saveRes.js";
 import {newsLookUp} from './newsRes.js';
 import {makePersentage, bestPosOutome, prdictedWinnings, howMuchForEach, shouldYouBet} from './genericFunctions.js';
 
@@ -157,4 +158,11 @@ export function MB(FirstBet, SecondBet, ThirdBet, HowMuch) {
     this.first = theFinalResult.first;
     this.second = theFinalResult.second;
     this.third = theFinalResult.third;
+
+
+    $('.MB__input__con__store').on("click", function() {
+        var parent = $(this).parents().find(".MB__recomendations");
+         collecResults(parent);
+    });
+
 }

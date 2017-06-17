@@ -1,5 +1,6 @@
  {
     "one" : {
+        "name": "bet1",
         "odds1" : "1/2",
         "odds2" :"2/3",
         "odds3" : "3/4",
@@ -13,6 +14,7 @@
         "fianlPayout3" : "60"
     },
     "odds2" : {
+        "name": "bet2",
         "odds1" : "1/2",
         "odds2" :"2/3",
         "odds3" : "3/4",

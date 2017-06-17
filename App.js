@@ -36,12 +36,13 @@ class App extends React.Component {
 
     submitform(event) {
         var results = new MB(this.test.first, this.test.SecondBet, this.test.ThirdBet, this.test.HowMuch);
-        this.submit.submit = 'update'; // not updating
     }
 
    render() {
       return (
+
             <form>
+
               <h2>New Bet</h2>
 
               <div>
@@ -65,7 +66,9 @@ class App extends React.Component {
               </div>
 
               <span onClick={this.submitform} className="MB__input__submit">{this.submit.submit}</span>
+
           </form>
+          
       );
     }
 }

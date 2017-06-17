@@ -50,6 +50,8 @@ export function collecResults(parent) {
             thirdResultFinal );
 
             // add to database function here
+            // add to cokkie
+            // destroy predictions and restet inputs
 
         })(); // add results to json
     }
