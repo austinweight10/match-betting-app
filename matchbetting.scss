@@ -59,14 +59,60 @@ input {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    max-width: 1500px;
+    margin: auto;
     .MB__header {
         width: 100%;
         p {
             padding: 30px;
         }
     }
+
+    .MB__errorEmpty, .MB__errorNaN, .MB__errorValid {
+        text-align: center;
+        background: $red;
+        border-radius: 5px;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        padding: 8px 30px;
+        width: calc(100% - 80px);
+        margin: 15px auto;
+        position: relative;
+        font-size: 10px;
+        // add arrow with after to this to point above
+        &:after {
+            content: " ";
+            background: red;
+            position: absolute;
+            transform: rotate(90deg);
+        }
+    }
+
+    #MB__sport-res {
+        padding: 10px;
+        background: $darkblue;
+        margin: 0 -10px 40px;
+        overflow: hidden;
+        div {
+            white-space: nowrap;
+            color: white;
+            animation: textAnimate 50s;
+            @keyframes textAnimate {
+                0% {
+                    transform: translate(0%);
+                }
+                100% {
+                    transform: translate(-101%);
+                }
+            }
+            &:hover {
+                animation-play-state: paused;
+            }
+        }
+    }
     .MB__prev-res {
-        padding: 0 20px 0 30px;
+        padding: 0 20px;
         .MB__prev-res__res {
             display: block;
             width: 100%;
@@ -93,21 +139,29 @@ input {
                 div {
                     columns: 1;
                 }
-                .MB__prev-res__res__recomendation, .MB__prev-res__res__the-odds, .MB__prev-res__res__howfull {
+                .MB__prev-res__res__recomendation, .MB__prev-res__res__the-odds, .MB__prev-res__res__howfull, .MB__prev-res__delete {
                     display: block;
                 }
                 .MB__prev-res__res__how-much, .MB__prev-res__res__the-ammounts, .MB__prev-res__res__ammounts3, .MB__prev-res__res__was-recomended, .MB__prev-res__res__res1, .MB__prev-res__res__res2, .MB__prev-res__res__res3 {
                     display: inline-block;
                 }
+                .MB__prev-res__res__how-much, .MB__prev-res__res__winnings {
+                    span {
+                        color: $red;
+                    }
+                }
             }
         }
-        .MB__prev-res__read-more {
+        .MB__prev-res__read-more, .MB__prev-res__delete {
             margin: 10px 0px 20px;
             border: none;
             background: white;
             padding: 0;
             border-bottom: 1px solid $blue;
             color: $blue;
+        }
+        .MB__prev-res__delete {
+            display: none;
         }
     }
 
@@ -117,6 +171,10 @@ input {
         padding: 0 20px;
         margin-bottom: auto;
         background: #f4fcff;
+        width: 100%;
+        form {
+            width: 100%;
+        }
         div {
             width: 100%;
             padding-bottom: 5px;
@@ -149,41 +207,26 @@ input {
                 background: $darkblue;
             }
         }
-        .MB__input__errorEmpty, .MB__input__errorNaN {
-            text-align: center;
-            background: $red;
-            border-radius: 5px;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 8px 30px;
-            width: calc(100% - 80px);
-            margin: 15px auto;
-            position: relative;
-            font-size: 10px;
-            // add arrow with after to this to point above
-            &:after {
-                content: " ";
-                background: red;
-                position: absolute;
-                transform: rotate(90deg);
-            }
-        }
     }
 
     .MB__recomendations {
         display: flex;
         flex-direction: column;
-        padding: 0 30px 0 20px;
+        padding: 0 20px;
+        width: 100%;
         h2 {
             display: none;
+        }
+        .MB__recomendations__saved {
+            text-align: center;
+            color: $red;
         }
         &.MB__recomendations--open {
             h2 {
                 display: block;
             }
         }
-         span {
+        span {
             display: inline-block;
             padding-bottom: 5px;
             width: 100%;

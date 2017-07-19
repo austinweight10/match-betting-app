@@ -1,8 +1,61 @@
 import $ from 'jquery';
 
-// build recusive function for weighting based on odds / if lots more ned to mirror
-// finishe what we think best prediction will be
-// prdictedWinnings needs to infulece recomendation comment
+///////////////////////////// build recusive function for weighting based on odds / if lots more need to mirror
+/////////////////////////////// finish what we think best prediction will be
+
+
+///////// non algorim based functions
+
+// read more function
+export function read(x, y, z) {
+    x.one("click", function() {
+        $(this).parent().parent().addClass("MB__prev-res--open");
+        $(this).text(z);
+        $(this).one("click", function() {
+            $(this).parent().parent().removeClass("MB__prev-res--open");
+            $(this).text(y);
+            read(x, y, x);
+        });
+    });
+}
+
+// remove errors
+export function removeErrors() {
+    $(".MB__errorEmpty").remove();
+    $(".MB__errorNaN").remove();
+    $(".MB__errorValid").remove();
+}
+
+export function errorHandeling(y, z) {
+
+    let x = [];
+
+    if (z === 'NaN') {
+        x = ["MB__errorNaN", '<div class="MB__errorNaN">this is still not a number</div>', '<div class="MB__errorNaN">this is not a number</div>'];
+    } else if (z === 'valid') {
+        x = ["MB__errorEmpty", '<div class="MB__errorEmpty">this is still not valid</div>', '<div class="MB__errorEmpty">this is not valid</div>'];
+    } else {
+        x = ["MB__errorValid", '<div class="MB__errorValid">this is still empty</div>', '<div class="MB__errorValid">this is empty</div>'];
+    }
+
+    if (checkElement.hasClass(x[0])) {
+        removeErrors();
+        y.append(x[1]);
+    } else {
+        removeErrors();
+        y.append(x[2]);
+    }
+
+}
+
+
+/////// algorithmic functions
+
+// persentage for each
+export function howMuchForEach(x, y) {
+    return (x * y) / 100;
+}
+
 
 function createPer(x) {
     const y = x.split('/');
@@ -18,82 +71,116 @@ export function makePersentage(x) {
 // turn fractions into presentages num to 1 - important == this is the actual sum for calculating results
 export function makePersentageActual(x) {
     const z = createPer(x);
-    return  Math.floor(z * 1);
+    return z * 1;
 }
 
 // is correct? yes / no
-export function anountReturned(result, fraction, amount) {
-    if (result === "yes" || result === "Yes" || result === "correct" || result === "YES") {
-        return fraction * amount;
+export function anountReturned(x, y, z) {
+    if (x === "yes" || x === "Yes") {
+        const amountToReturn = y * z;
+        return amountToReturn.toFixed(2);  // to fixed as final result
     } else {
-        return 0;
+        return 0 - z;
     }
 }
 
-// best outcome
-export function bestPosOutome(first, second, third) {
-    if (first > second) {
-         if (first > third) {
-             return first;
-         } else {
-             return third;
-         }
-    } else {
-        if (second > third) {
-            return second;
+
+// calc winnings independent function
+export function finalWinnings(el) {
+
+    const times100 = (x) => {
+        return x * 100;
+    };
+
+    const times = [];
+    el.map(
+        (x) => {
+            times.push(times100(x));
+        }
+    );
+
+    let final = 0;
+    const adding = (x) => {
+        final += x;
+    }
+    times.map((x) => {
+        adding(parseInt(x));
+    });
+
+    let amountWon = final / 100,
+        result = 0;
+
+    if (amountWon > el[3]) {
+        result = parseInt(amountWon) - parseInt(el[3]);
+    } else if (amountWon < el[3]) {
+        // currently zeroed so cannot be below amount bet // need to stop it being zeroed anountReturned function
+        result = parseInt(el[3]) - parseInt(amountWon);
+    }
+
+    return result;
+
+};
+
+
+// best outcome   moved into predict winnings
+
+// whet we think the winnings will be     ////////////////////////////////////////   what a pile of shit fix
+export function prdictedWinnings(first, second, third, firstAmmount, secondAmmount, thirdAmmount) {
+
+    //  most likely = smallest persentage
+    function mostLikely() {
+        return Math.min(first, second, third);
+    }
+
+    function bestPosOutome(first, second, third) {
+        if (first > second) {
+             if (first > third) {
+                 return first;
+             } else {
+                 return third;
+             }
         } else {
-            return third;
+            if (second > third) {
+                return second;
+            } else {
+                return third;
+            }
         }
     }
-}
 
-// whet we think the winnings will be
-export function prdictedWinnings(first, second, third, newspredict, firstAmmount, secondAmmount, thirdAmmount) {
-    // most probable outcome based on news and persntages * amount recomended
-    const bestOut = bestPosOutome(first, second, third);
 
+    ////////// build a recersive function here  to work out if the amounts recomended will always mean we win money //  then return true or false
     function checkDefasit(first, second, third, firstAmmount, secondAmmount, thirdAmmount) {
         // check whoever wins we do not lose loads/anything
-        const one = first * firstAmmount,
-            two = second * secondAmmount,
-            three = third * thirdAmmount,
-            persentageLessAllowed = ""; // as num not persentag
+        let collectRes = [];
 
-        // check if how far all of these are off the orignal spend by persentage and make sure fav is over
-        return !one < persentageLessAllowed || two < persentageLessAllowed || three < persentageLessAllowed;
+        const x = (first, second, third, firstAmmount, secondAmmount, thirdAmmount) = > {
+
+            
+            first * firstAmmount ? true : false;
+            two = second * secondAmmount ? true : false;
+            three = third * thirdAmmount ? true : false;
+
+            x(second, third, first, secondAmmount, thirdAmmount, firstAmmount);
+        }
+
+        return x(first, second, third, firstAmmount, secondAmmount, thirdAmmount);
 
     }
 
-    // this needs to influence whats recomended comment
-    if (checkDefasit(first, second, third, firstAmmount, secondAmmount, thirdAmmount) && (((newspredict * firstAmmount) >= firstAmmount) && ((newspredict * secondAmmount) >= secondAmmount) && ((newspredict * thirdAmmount) >= thirdAmmount))) {
-        // good
-        return true;
-    } else if ((bestOut === newspredict) && checkDefasit(first, second, third, firstAmmount, secondAmmount, thirdAmmount)) {
-        // safyiish
-        return true;
-    } else if ((bestOut === newspredict) && (((newspredict * secondAmmount) >= firstAmmount) && ((newspredict * secondAmmount) >= secondAmmount) && ((newspredict * thirdAmmount) >= thirdAmmount))) {
-        // risky
-        return true;
-    } else {
-        return false;
-    }
+    return [checkDefasit(first, second, third, firstAmmount, secondAmmount, thirdAmmount), bestPosOutome(first, second, third), mostLikely()]
+
 }
 
-// persentage for each
-export function howMuchForEach(amount, persentage) {
-    return (amount * persentage) / 100;;
-}
-
-// is bet good function - waiting on/needs to take into account prdictedWinnings
-export function shouldYouBet(predictedOutcome, bestOutCome, HowMuchSpend) {
-
-    // is it safe to bet garanteed win?
-    if (predictedOutcome) {
-        return 'No';
-    // will the returns be worth it?
-    } else if (bestOutCome > ((HowMuchSpend * 2) / 1.3)) {
-        return 'Would advise against';
+////////////////// predicted outcome relys on abve function       //////////// ned to write again
+export function shouldYouBet(predictedOutcome, HowMuchSpend) {
+    if (predictedOutcome[0]) {
+        return "Yes, lets make some money";
+    } else if (predictedOutcome[1] === mostLikely()) {
+        return "Your choise, good odds for a likely outcome";
+    } else if (predictedOutcome[1] > ((HowMuchSpend * 2) / 1.3)) {
+        return "Your choise, this is a risky but good return";
     } else {
-        return 'Yes go for it';
+        return "No, don't waste your money";
     }
 }

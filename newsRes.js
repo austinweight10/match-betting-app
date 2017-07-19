@@ -1,22 +1,34 @@
-// take into account news and external sources - predictions twitter / sports predictions / previous results / these can then be appended to to bar as a live stream it will only select relivant - should have links
-// football learning system - allows us to know who performs consistantly and who doesn't and change results accordingly also allow for peaks and lows - will need to know which teams are being bet on for this - mabye future feature
-
-// import twitter api json
-// scan sports sites json
-// append to dom most relivant
-
 // need to build
 import $ from 'jquery';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import jsonSport from "./en.2017.json";
 
 export function newsLookUp() {
 
-    // remove
-    return true;
+    var matches = jsonSport.rounds.length;
 
-    // this will rely on consistant data format
+    (() => {
+
+        let sportsDataArray = [];
+        (() => {
+            jsonSport.rounds[matches - 1].matches.map((x) => {
+                sportsDataArray.push(x.team1.name);
+                sportsDataArray.push(x.score1);
+                sportsDataArray.push(' vs ')
+                sportsDataArray.push(x.team2.name);
+                sportsDataArray.push(x.score2 + '  |  ');
+            })
+        })();
+        // console.log(sportsDataArray)
+          ReactDOM.render(<div>{sportsDataArray}</div>,
+               document.getElementById('MB__sport-res'));
+
+      })();
+
+    // this will relly on consistant data format
     var twitterResults = function() {
         var data = ""; // add twitter data here
-        var HowMuchSpend = $(".MB__input__name-of-event").val();
         var matchName = ""; // regex to match name
         var getExraInfo = function(pasreData) {  // split useful info
             var data = pasreData;
@@ -44,6 +56,6 @@ export function newsLookUp() {
             }
         }
     };
-    // needs to have a way of identifying even if its just that the fractions are the same
-    return predictedWinned;
 };
+
+newsLookUp();

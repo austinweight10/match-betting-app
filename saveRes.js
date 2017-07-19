@@ -1,58 +1,69 @@
 import $ from 'jquery';
 import {MB} from "./matchbetting.js";
-import {makePersentageActual, anountReturned} from './genericFunctions.js';
+window.Cookies = require("./js.cookie.js");
+import {makePersentageActual, anountReturned, errorHandeling, removeErrors, finalWinnings, errorValid} from './genericFunctions.js';
 
 // function for collecting past results
 
-// update retreving elements from dom to react
-// create function to add to database
+//////////////////////// create function to add to db //////////////////////////
 
-export function collecResults(parent) {
+export function collecResults(parent, firstamount, secondammount, thirdammount, howmuchwasbet) {
 
-    // get resuts from dom - need to update to react
-    const firstResult = parent.find(".MB__input__con__first").val(), // need to make sepcific to each result
-        secondResult = parent.find(".MB__input__con__second").val(), // need to make sepcific to each result
-        thirdResult = parent.find(".MB__input__con__third").val(); // need to make sepcific to each result
-
-    const results = new MB();
-
-    // make fractions persentages
-    const fractionOne = makePersentageActual(results.firstBet),
-        fractionTwo = makePersentageActual(results.secondBet),
-        fractionThree = makePersentageActual(results.thirdBet);
+    const results = new MB(firstamount, secondammount, thirdammount, howmuchwasbet);
 
     // check how much for each
-    const firstResultFinal = anountReturned(firstResult, fractionOne, results.first),
-        secondResultFinal = anountReturned(secondResult, fractionTwo, results.second),
-        thirdResultFinal = anountReturned(thirdResult, fractionThree, results.third);
+    const firstResultFinal = anountReturned(parent[0], makePersentageActual(results.firstBet), results.first),
+        secondResultFinal = anountReturned(parent[1], makePersentageActual(results.secondBet), results.second),
+        thirdResultFinal = anountReturned(parent[2], makePersentageActual(results.thirdBet), results.third);
 
     // check results not empty
-    // need error handling here // make other error handling global
-    if (firstResult !== "" && secondResult !== "" && thirdResult !== "") {
+    if (parent[0] === "" || parent[1] === "" || parent[2] === "") {
+        return errorHandeling($(".MB__recomendations"), 'empty');
+    } else if (!(parent[0] === "yes" || parent[0] === "no" || parent[0] === "Yes" || parent[0] === "No" || parent[1] === "yes" || parent[1] === "no" || parent[1] === "Yes" || parent[1] === "No" || parent[2] === "yes" || parent[2] === "no" || parent[2] === "Yes" || parent[2] === "No")) {
+        return errorHandeling($(".MB__recomendations"), 'valid');
+    } else {
 
-        // add to json
-        // needs building this will require node
+        removeErrors();
+
         (() => {
 
-            // need to create objsect to append
+            const setCookie = Cookies.get();
+            let betNmae = 'Bet' + Object.keys(setCookie).length;
 
-            // can be removed just to check results
-            console.log(makeResfirstbet + "," +
-            makeRessecondbet  + "," +
-            makeResthirdbet + "," +
-            results.first + results.second + results.third + "," +
-            results.isItRight + "," +
-            makeResfirstamount + "," +
-            makeRessecondammount + "," +
-            makeResthirdammount  + "," +
-            firstResultFinal  + "," +
-            secondResultFinal  + "," +
-            thirdResultFinal );
+            // array for cookie
+            var resultsArray = {
+                [betNmae] : {
+                    "name": betNmae,
+                    "odds1" : results.firstBet,
+                    "odds2" : results.secondBet,
+                    "odds3" : results.thirdBet,
+                    "amountBet" : howmuchwasbet,
+                    "RecomendedBet" : results.isItRight,
+                    "finalBet1" : results.first,
+                    "finalBet2" : results.second,
+                    "fianlBet3" : results.third,
+                    "finalPayout1" : firstResultFinal,
+                    "finalPayout2" : secondResultFinal,
+                    "fianlPayout3" : thirdResultFinal,
+                    "finalWinnings": finalWinnings([firstResultFinal, secondResultFinal, thirdResultFinal, howmuchwasbet])
+                }
+            };
 
-            // add to database function here
-            // add to cokkie
-            // destroy predictions and restet inputs
+            Cookies.set(betNmae, resultsArray, { expires: 10000000000, path: '' });
 
-        })(); // add results to json
+            $('.MB__input__first-bet, .MB__input__second-bet, .MB__input__third-bet, .MB__input__ammount-bet').val('');
+            $('#MB__recomendations__predict div').remove();
+
+            $('#MB__recomendations__predict').append('<div class="MB__recomendations__saved"><span>Your results have been saved.</span></div>');
+
+            setTimeout(
+                () => {
+                    $(".MB__recomendations").removeClass("MB__recomendations--open");
+                    $('#MB__recomendations__predict div').remove();
+                    location.reload();
+                }, 3000
+            )
+
+        })();
     }
 }
