@@ -1,13 +1,14 @@
 import $ from 'jquery';
 import {MB} from "./matchbetting.js";
 window.Cookies = require("./js.cookie.js");
+import {previousRes} from "./prevRes.js";
 import {makePersentageActual, anountReturned, errorHandeling, removeErrors, finalWinnings, errorValid} from './genericFunctions.js';
 
 // function for collecting past results
 
 //////////////////////// create function to add to db //////////////////////////
 
-export function collecResults(parent, firstamount, secondammount, thirdammount, howmuchwasbet) {
+export function collecResults(parent, firstamount, secondammount, thirdammount, howmuchwasbet, betName) {
 
     const results = new MB(firstamount, secondammount, thirdammount, howmuchwasbet);
 
@@ -28,12 +29,12 @@ export function collecResults(parent, firstamount, secondammount, thirdammount, 
         (() => {
 
             const setCookie = Cookies.get();
-            let betNmae = 'Bet' + Object.keys(setCookie).length;
+            // let betNmae = 'Bet' + Object.keys(setCookie).length;
 
             // array for cookie
             var resultsArray = {
-                [betNmae] : {
-                    "name": betNmae,
+                [betName] : {
+                    "name": betName,
                     "odds1" : results.firstBet,
                     "odds2" : results.secondBet,
                     "odds3" : results.thirdBet,
@@ -49,19 +50,20 @@ export function collecResults(parent, firstamount, secondammount, thirdammount, 
                 }
             };
 
-            Cookies.set(betNmae, resultsArray, { expires: 10000000000, path: '' });
+            Cookies.set(betName, resultsArray, { expires: 10000000000, path: '' });
 
             $('.MB__input__first-bet, .MB__input__second-bet, .MB__input__third-bet, .MB__input__ammount-bet').val('');
             $('#MB__recomendations__predict div').remove();
 
             $('#MB__recomendations__predict').append('<div class="MB__recomendations__saved"><span>Your results have been saved.</span></div>');
 
+            previousRes();
+
             setTimeout(
                 () => {
                     $(".MB__recomendations").removeClass("MB__recomendations--open");
                     $('#MB__recomendations__predict div').remove();
-                    location.reload();
-                }, 3000
+                }, 2500
             )
 
         })();

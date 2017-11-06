@@ -1,22 +1,17 @@
 import $ from 'jquery';
 
-///////////////////////////// build recusive function for weighting based on odds / if lots more need to mirror
-/////////////////////////////// finish what we think best prediction will be
-
-
 ///////// non algorim based functions
 
 // read more function
-export function read(x, y, z) {
-    x.one("click", function() {
-        $(this).parent().parent().addClass("MB__prev-res--open");
-        $(this).text(z);
-        $(this).one("click", function() {
-            $(this).parent().parent().removeClass("MB__prev-res--open");
-            $(this).text(y);
-            read(x, y, x);
-        });
-    });
+export function readopen(x, z) {
+    x.parentElement.parentElement.className += " MB__prev-res--open";
+    x.innerHTML = z;
+}
+
+// read more function
+export function readclose(x, y) {
+    x.parentElement.parentElement.className = "MB__prev-res__res";
+    x.innerHTML = y;
 }
 
 // remove errors
@@ -38,7 +33,7 @@ export function errorHandeling(y, z) {
         x = ["MB__errorValid", '<div class="MB__errorValid">this is still empty</div>', '<div class="MB__errorValid">this is empty</div>'];
     }
 
-    if (checkElement.hasClass(x[0])) {
+    if (y.hasClass(x[0])) {
         removeErrors();
         y.append(x[1]);
     } else {
@@ -52,23 +47,85 @@ export function errorHandeling(y, z) {
 /////// algorithmic functions
 
 // persentage for each
-export function howMuchForEach(x, y) {
-    return (x * y) / 100;
-}
+// needs to be smarter and weight the favorite
 
+// maybe need to take more of the least favorite
+export function howMuchForEach(howmuch, x, y, z) {
+
+    let one,
+        two,
+        three,
+        other1,
+        other2,
+        fav = Math.min(x, y, z),
+
+        oneOutput = (x * howmuch) / 100,
+        twoOutput = (y * howmuch) / 100,
+        threeOutput = (z * howmuch) / 100;
+
+    if (x === fav) {
+        fav = oneOutput;
+        other1 = twoOutput;
+        other2 = threeOutput;
+    } else if (y === fav) {
+        other1 = oneOutput;
+        fav = twoOutput;
+        other2 = threeOutput;
+    } else {
+        other1 = oneOutput;
+        other2 = twoOutput;
+        fav = threeOutput;
+    }
+
+    (fav, other1, other2) => {
+
+        let leastFav = Math.max(x, y, z);
+
+        if (leastFav === other1) {
+            let per1 = (35 / 100) * other1,
+                per2 = (25 / 100) * other2;
+        } else {
+            let per1 = (25 / 100) * other1,
+                per2 = (35 / 100) * other2;
+        }
+
+        other1 = other1 - per1;
+        other2 = other2 - per2;
+        fav = fav + (per1 + per2);
+
+    };
+
+    if (x === fav) {
+        one = fav;
+        two = other1;
+        three = other2;
+    } else if (y === fav) {
+        one =other1;
+        two = fav;
+        three = other2;
+    } else {
+        one = other1;
+        two = other2;
+        three = fav;
+    }
+
+    return [one, two, three];
+
+}
 
 function createPer(x) {
-    const y = x.split('/');
-    return parseInt(y[0], 10) / parseInt(y[1], 10);
+    // const y = x.split('/');
+    // return parseInt(y[0], 10) / parseInt(y[1], 10);
+    return eval(x);
 }
 
-// turn fractions into presentages num to 100 - important == this is not the actual sum not for calculating results -- for working out bet amounts
+// turn fractions into presentages num to 100 - important - this is not the actual sum not for calculating results -- for working out bet amounts
 export function makePersentage(x) {
-    const z = createPer(x);
-    return  Math.floor(z * 100);
-};
+    const z = createPer(x)
+    return (z * 100) / 100;
+}
 
-// turn fractions into presentages num to 1 - important == this is the actual sum for calculating results
+// turn fractions into presentages num to 1 - important - this is the actual sum for calculating results
 export function makePersentageActual(x) {
     const z = createPer(x);
     return z * 1;
@@ -102,7 +159,7 @@ export function finalWinnings(el) {
     let final = 0;
     const adding = (x) => {
         final += x;
-    }
+    };
     times.map((x) => {
         adding(parseInt(x));
     });
@@ -113,74 +170,246 @@ export function finalWinnings(el) {
     if (amountWon > el[3]) {
         result = parseInt(amountWon) - parseInt(el[3]);
     } else if (amountWon < el[3]) {
-        // currently zeroed so cannot be below amount bet // need to stop it being zeroed anountReturned function
         result = parseInt(el[3]) - parseInt(amountWon);
     }
 
     return result;
 
-};
-
-
-// best outcome   moved into predict winnings
-
-// whet we think the winnings will be     ////////////////////////////////////////   what a pile of shit fix
-export function prdictedWinnings(first, second, third, firstAmmount, secondAmmount, thirdAmmount) {
-
-    //  most likely = smallest persentage
-    function mostLikely() {
-        return Math.min(first, second, third);
-    }
-
-    function bestPosOutome(first, second, third) {
-        if (first > second) {
-             if (first > third) {
-                 return first;
-             } else {
-                 return third;
-             }
-        } else {
-            if (second > third) {
-                return second;
-            } else {
-                return third;
-            }
-        }
-    }
-
-
-    ////////// build a recersive function here  to work out if the amounts recomended will always mean we win money //  then return true or false
-    function checkDefasit(first, second, third, firstAmmount, secondAmmount, thirdAmmount) {
-        // check whoever wins we do not lose loads/anything
-        let collectRes = [];
-
-        const x = (first, second, third, firstAmmount, secondAmmount, thirdAmmount) = > {
-
-            
-            first * firstAmmount ? true : false;
-            two = second * secondAmmount ? true : false;
-            three = third * thirdAmmount ? true : false;
-
-            x(second, third, first, secondAmmount, thirdAmmount, firstAmmount);
-        }
-
-        return x(first, second, third, firstAmmount, secondAmmount, thirdAmmount);
-
-    }
-
-    return [checkDefasit(first, second, third, firstAmmount, secondAmmount, thirdAmmount), bestPosOutome(first, second, third), mostLikely()]
-
 }
 
-////////////////// predicted outcome relys on abve function       //////////// ned to write again
-export function shouldYouBet(predictedOutcome, HowMuchSpend) {
-    if (predictedOutcome[0]) {
-        return "Yes, lets make some money";
-    } else if (predictedOutcome[1] === mostLikely()) {
-        return "Your choise, good odds for a likely outcome";
-    } else if (predictedOutcome[1] > ((HowMuchSpend * 2) / 1.3)) {
-        return "Your choise, this is a risky but good return";
-    } else {
-        return "No, don't waste your money";
+export function prdictedWinnings(first, second, third, firstAmmount, secondAmmount, thirdAmmount, amountBet) {
+
+    // first, second, third, = the percents
+    // firstAmmount, secondAmmount, thirdAmmount, = bet amounts
+    // amountBet = total amount bet
+
+    console.log(first + 'second');
+    console.log(second + 'second');
+    console.log(third + 'second');
+
+    // returns
+    // what the most likely bet persentage is 0
+    // that the arg position is 1
+    // wether this covers other bets 2
+    function mostLikely(x, y, z, per, amount) {
+
+        let min = Math.min(x, y, z),
+            argNum = 0,
+            doesAmountCoverOtherBets;
+
+            if (min === y) {
+                argNum = 1;
+            } else if (min === z) {
+                argNum = 2;
+            }
+
+            console.log(amount);
+            console.log(min + ',' + argNum);
+            console.log(min + ',' + per[argNum]);
+            console.log((min * per[argNum]) * 10);
+
+            if ((min * per[argNum]) > amount) {
+                doesAmountCoverOtherBets = true;
+            } else {
+                doesAmountCoverOtherBets = false;
+            }
+
+        return [per[argNum], argNum, doesAmountCoverOtherBets];
+
     }
+
+    // returns
+    // return arg position = 0
+    // returns is the best outcome woth betting on = 1
+    function bestPosOutome(x, y, z, HowMuchSpend ) {
+
+        let persentage,
+            argNum = 0;
+
+        if (x > y) {
+             if (x > z) {
+                 persentage = x[0];
+             } else {
+                 persentage = x[0];
+             }
+        } else {
+            if (y > z) {
+                persentage = x[0];
+            } else {
+                persentage = x[0];
+            }
+        }
+
+        if (persentage === y[0]) {
+            argNum = 1;
+        } else if (persentage === z[0]) {
+            argNum = 2;
+        }
+
+        const isBestoutcomeWothiIt = persentage * arguments[argNum][1] > ((HowMuchSpend * 2) / 0.25);
+
+        return [argNum, isBestoutcomeWothiIt];
+
+    }
+
+    // returns
+    // do all best cover full amount = 3
+    function areAllBetsCovered(one, two, three, fAmt, sAmt, tAmt, aBet) {
+
+        let collectRes = [],
+            collect = [];
+
+        function chechD(x, y, z, xx, yy, zz, num) {
+
+            collect[num] = [];
+            collect[num].push(x * xx);
+            collect[num][0] = collect[num][0] - yy;
+            collect[num][0] = collect[num][0] - zz;
+
+            if (num === 2) {
+                return collect;
+            }
+
+            num = num + 1;
+
+            chechD(y, z, x, yy, zz, xx, num);
+        }
+
+        chechD(one, two, three, fAmt, sAmt, tAmt, 0);
+
+        return [collect[0] > aBet && collect[1] > aBet && collect[2] > aBet];
+
+    }
+
+    // returns
+    // true or false if one does = 0
+    // need to know which ones arg = 1
+    function doesABetCoverWhole(one, two, three, amtBet) {
+
+        let bet1 = one[0] * one[1],
+            bet2 = two[0] * two[1],
+            bet3 = three[0] * three[1],
+
+            doesIt,
+            argnm = 0;
+
+        if (bet1 > amtBet || bet2 > amtBet || bet3 > amtBet) {
+            doesIt = true;
+            if (bet2 > amtBet) {
+                argnm = 1;
+            } else if (bet3 > amtBet) {
+                argnm = 2;
+            }
+        } else {
+            argnm = null;
+            doesIt = false;
+        }
+
+        return [doesIt, argnm];
+    }
+
+    // returns
+    // true if all bets are within the reach of the largest odds
+    function howSimularAreTheOdds(first, second, third) {
+
+        const largetNum = Math.max(first, second, third),
+            smallestNum = Math.min(first, second, third),
+
+            one = Math.abs(first - second),
+            two = Math.abs(second - third),
+            three = Math.abs(third - first);
+
+        if (one < smallestNum && two < smallestNum && three < smallestNum) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    // returns
+    // true or false = 0
+    // needs to return which one has a chance = 1
+    // needs to return odds = 2
+    function doesTheOutsiderHaveAchance(x, y, z) {
+
+        let hasChance,
+            argNum = null,
+            odds,
+
+            mostUnlikely = Math.max(x, y, z),
+            mostLikely = Math.min(x, y, z);
+
+        if (Math.abs(mostUnlikely) < (mostLikely / 4)) {
+            hasChance = true;
+            if (mostUnlikely === x) {
+                argNum = 0;
+                odds = x;
+            } else if (mostUnlikely === y) {
+                argNum = 1;
+                odds = y;
+            } else {
+                argNum = 2;
+                odds = z;
+            }
+        } else {
+            hasChance = false;
+        }
+
+        return [hasChance, argNum, odds];
+
+    }
+
+    const areallcovered = areAllBetsCovered(first, second, third, firstAmmount, secondAmmount, thirdAmmount, amountBet),
+        bestPosOutcome = bestPosOutome([first, firstAmmount], [second, secondAmmount], [third, thirdAmmount], amountBet),
+        mostLikley = mostLikely(firstAmmount, secondAmmount, thirdAmmount, [first, second, third], amountBet),
+        doesABetCoverAll = doesABetCoverWhole([firstAmmount, first], [secondAmmount, second], [thirdAmmount, third], amountBet),
+        howSimularOdds = howSimularAreTheOdds(first, second, third),
+        outsiderChance = doesTheOutsiderHaveAchance(first, second, third);
+
+    return [areallcovered, bestPosOutcome, mostLikley, doesABetCoverAll, howSimularOdds, outsiderChance];
+}
+
+export function shouldYouBet(predictedOutcome, HowMuchSpend) {
+
+    // will be renamed when we rename functions
+    const areAllBetsCovered = predictedOutcome[0],
+        bestPosOutome = predictedOutcome[1],
+        mostLikley = predictedOutcome[2],
+        doesABetCoverAll = predictedOutcome[3],
+        howSimularOdds = predictedOutcome[4],
+        outsiderChance = predictedOutcome[5];
+
+    // yes = mosty likely very likly and return on it is very good
+    // risky = odds are fairly simular but good returns
+    // no = odds are simular and they dont all cover the bet
+
+    // no
+    const no1 = howSimularOdds,  // how simular are odds we want to be not simular = false
+            no2 = outsiderChance[0], // we dont want the outside to have a chance = false
+
+        // risky
+        risky1 = mostLikley[2] && (outsiderChance[1] !== mostLikley[1]), // is most likely larger than other best
+
+        // yes
+        yes1 = mostLikley[2], // does most likely cover other bets
+            yes2 = mostLikley[1] === bestPosOutome[0], // does most likely equal best outcome
+            yes3 = areAllBetsCovered[0], // do all best cover amount bet
+        yes4 = mostLikley[2] && outsiderChance[0], // does most likely cover bet and outside has a cnace
+            yes5 = (outsiderChance[2] - mostLikley[0]) < (mostLikley[0] / 2);  // is outside chance odds - most likly chance ods more than most likly divded by 2s
+
+            console.log(mostLikley);
+
+    if (no1 || no2) {
+        return 'no dont bet';
+    }  else if (yes1 && (yes2 || yes3)) {
+        return 'yep bet';
+    } else if (yes4 && yes5) {
+        return 'yep bet';
+    } else if (risky1) {
+        return 'this is a risky bet';
+    } else {
+        return 'no dont bet';
+    }
+
 }

@@ -56,11 +56,13 @@ input {
 }
 
 .MB {
-    width: 100%;
+    width: calc(100% - 20px);
     display: flex;
     flex-wrap: wrap;
     max-width: 1500px;
     margin: auto;
+    overflow: hidden;
+    border: 10px solid $darkblue;
     .MB__header {
         width: 100%;
         p {
@@ -89,6 +91,19 @@ input {
         }
     }
 
+    .MB__sport-re {
+        .MB__sport-res__last-season, .MB__sport-res__next-season, #MB__sport-res__rounds {
+            padding: 0 0 10px 20px;
+            display: inline-block;
+        }
+        .MB__sport-res__last-season, .MB__sport-res__next-season {
+            cursor: pointer;
+        }
+        #MB__sport-res__rounds {
+            display: block;
+        }
+    }
+
     #MB__sport-res {
         padding: 10px;
         background: $darkblue;
@@ -97,13 +112,15 @@ input {
         div {
             white-space: nowrap;
             color: white;
-            animation: textAnimate 50s;
+            animation: textAnimate 25s;
+            animation-timing-function: linear;
+            animation-iteration-count: 10000000;
             @keyframes textAnimate {
                 0% {
                     transform: translate(0%);
                 }
                 100% {
-                    transform: translate(-101%);
+                    transform: translate(calc(-100% + 100vw));
                 }
             }
             &:hover {
@@ -218,8 +235,8 @@ input {
             display: none;
         }
         .MB__recomendations__saved {
-            text-align: center;
-            color: $red;
+            text-align: left;
+            color: $blue;
         }
         &.MB__recomendations--open {
             h2 {
@@ -240,9 +257,9 @@ input {
         .MB__recomendations__info {
             font-size: 9px;
             color: $lightgrey;
-            white-space: nowrap;
+            // white-space: nowrap;
             letter-spacing: 0.4px;
-            padding-left: 5px;
+            padding-left: 0px;
         }
         input {
             width: calc(100% - 15px);

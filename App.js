@@ -8,8 +8,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        //////////////////////////////////// make below {first: '', SecondBet: '', ThirdBet: '', HowMuch: ''}
-        this.inputs = {first: '12/1', SecondBet: '23/4', ThirdBet: '7/3', HowMuch: '60'};
+        this.inputs = {first: '12/21', SecondBet: '2/3', ThirdBet: '32/4', HowMuch: '33'};
         this.submit = {submit: 'submit'};
         this.betsInput1 = this.betsInput1.bind(this);
         this.betsInput2 = this.betsInput2.bind(this);
@@ -35,6 +34,7 @@ class App extends React.Component {
     }
 
     submitform(event) {
+        console.log('values are preset');
         var results = new MB(this.inputs.first, this.inputs.SecondBet, this.inputs.ThirdBet, this.inputs.HowMuch);
     }
 

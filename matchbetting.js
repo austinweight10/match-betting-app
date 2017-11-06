@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import {collecResults} from "./saveRes.js";
 import {makePersentage, prdictedWinnings, howMuchForEach, shouldYouBet, errorHandeling, removeErrors} from './genericFunctions.js';
-
-//////////////////////////// update inputs to ''
-//////////////////////////// fix is it right
+window.Cookies = require("./js.cookie.js");
 
 // below function creates a prototype
 export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
+
+    console.log(firstBet + ',' + secondBet + ',' + thirdBet + ',' + HowMuchSpend)
 
     // make persenatges
     const firstBetPersentage = makePersentage(firstBet),
@@ -17,21 +17,23 @@ export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
 
         // total of all persentages to devid by
         total = firstBetPersentage + secondBetPersentage + thirdBetPersentage,
-        moneySplit = firstBetPersentage + secondBetPersentage + thirdBetPersentage,
 
         // how much for each application
-        firstAmmount = howMuchForEach(HowMuchSpend, (firstBetPersentage / total) * 100),
-        secondAmmount = howMuchForEach(HowMuchSpend, (secondBetPersentage / total) * 100),
-        thirdAmmount = howMuchForEach(HowMuchSpend, (thirdBetPersentage / total) * 100),
+        amountPerEach = howMuchForEach(HowMuchSpend, (firstBetPersentage / total) * 100, (secondBetPersentage / total) * 100, (thirdBetPersentage / total) * 100),
+        firstAmmount = amountPerEach[0],
+        secondAmmount = amountPerEach[1],
+        thirdAmmount = amountPerEach[2];
 
         // results made into numbers
-        firstBetResult = Math.round(firstAmmount * 100) / 100,
+    const firstBetResult = Math.round(firstAmmount * 100) / 100,
         secondBetResult = Math.round(secondAmmount * 100) / 100,
-        thirdBetResult = Math.round(thirdAmmount * 100) / 100,
+        thirdBetResult = Math.round(thirdAmmount * 100) / 100;
 
+        console.log(firstAmmount + 'first');
+        console.log(secondAmmount + 'first');
+        console.log(thirdAmmount + 'first');
 
-        /////////////////////////////////////////////////////////////////////  wtf is his?
-        isItRight = shouldYouBet(prdictedWinnings(firstBetPersentage, secondBetPersentage, thirdBetPersentage, firstAmmount, secondAmmount, thirdAmmount), HowMuchSpend);
+    const isItRight = shouldYouBet(prdictedWinnings(firstAmmount, secondAmmount, thirdAmmount, firstBetPersentage, secondBetPersentage, thirdBetPersentage, HowMuchSpend), HowMuchSpend);
 
     // results for bet
     function finalResult(first, second, third, isItRight) {
@@ -64,10 +66,15 @@ export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
                 constructor(props) {
                     super(props);
                     this.saveResults = this.saveResults.bind(this);
-                    this.values = {first: 'no', second: 'yes', third: 'yes'}; /////////////////////////// need to update to ''
+                    this.values = {name: 'no name', first: '', second: '', third: ''};  // do not remove no name
+                    this.betName = this.betName.bind(this);
                     this.betInput1 = this.betInput1.bind(this);
                     this.betInput2 = this.betInput2.bind(this);
                     this.betInput3 = this.betInput3.bind(this);
+                }
+
+                betName(event) {
+                    this.values.name = event.target.value;
                 }
 
                 betInput1(event) {
@@ -83,7 +90,24 @@ export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
                 }
 
                 saveResults(event) {
-                     collecResults([this.values.first, this.values.second, this.values.third], firstBet, secondBet, thirdBet, HowMuchSpend);
+
+                    console.log('values need to be set ver no etc..');
+
+                    const setCookie = Cookies.get();
+
+                    let cookiesame;
+                    Object.keys(setCookie).map(
+                        (x) => {
+                            if(x === this.values.name) {
+                                cookiesame = false;
+                            }
+                        }
+                    );
+                    if (cookiesame !== false) {
+                        collecResults([this.values.first, this.values.second, this.values.third], firstBet, secondBet, thirdBet, HowMuchSpend, this.values.name);
+                    } else{
+                        errorHandeling($(".MB__input__con"), 'valid');
+                    }
                 }
 
                 render() {
@@ -116,6 +140,14 @@ export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
                                  <input onChange={this.betInput1} className="MB__input__con__first"/>
                                  <input onChange={this.betInput2} className="MB__input__con__second"/>
                                  <input onChange={this.betInput3} className="MB__input__con__third"/>
+
+                                 <span>
+                                     <h4>Bet Name</h4>
+                                     <span className="MB__recomendations__info">(Please chose a name for your bet. Make it diffferent from other bet names.)</span>
+                                 </span>
+
+                                 <input onChange={this.betName}/>
+
                                  <span onClick={this.saveResults} className="MB__input__con__store">store results</span>
                              </div>
 

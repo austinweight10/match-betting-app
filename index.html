@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html lang = "en">
+<html lang="en">
 
    <head>
       <meta charset = "UTF-8">
-      <title>React App</title>
+      <meta name="description" content="Six-Dollar Combine is a site to help you place the best bets for odds">
+      <meta name="keywords" content="Six-Dollar Combine, Match betting, betting, betting odds">
+      <meta name="author" content="Austin Weight">
+      <title>Six-Dollar Combine</title>
    </head>
-
-   <!-- add more quoutes through the site from tv show for outputs     I got loads of money!     maybe add a video    add images of football matches -->
-   <!-- add doc head  -->
-   <!-- good name for match betting app -->
-   <!-- add tc and disclamer this is not garenteed and image  -->
 
    <style>
    @import "matchbetting.min.css";
@@ -18,13 +16,17 @@
    <div class="MB">
 
        <div class="MB__header">
-           <h1>Match betting</h1>
-           <h1><span>subtile</span></h1>
-           <p>into and disclamer and cookie policy</p>
+           <h1>Six-Dollar Combine</h1>
+           <h1><span>Split your bets acording to proability of win (Across the board betting).</span></h1>
+           <p>To use the calculator, choose a football match or three way odds and get the odds for a win, draw or loss and enter them into the calculator. Disclamer the calculator will give you the best statistical bet. This is not always going to be the outcome (Do not bet if you cannot afford to lose money). This calculator also uses cookies to store your results, if you clear your cookies you will lose previos bet results.</p>
            <img scr="">
        </div>
 
-       <div id="MB__sport-res">
+       <div class="MB__sport-re">
+           <span class="MB__sport-res__last-season">Last Round</span>
+           <span class="MB__sport-res__next-season">Next Round</span>
+           <div id="MB__sport-res__rounds"></div>
+           <div id="MB__sport-res"></div>
        </div>
 
        <div class="MB__prev-res">

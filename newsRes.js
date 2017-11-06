@@ -4,58 +4,81 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import jsonSport from "./en.2017.json";
 
-export function newsLookUp() {
+let match = jsonSport.rounds.length - 29;
 
-    var matches = jsonSport.rounds.length;
+export function newsLookUp(match, func = 'both') {
+
+    function more(match) {
+        $(".MB__sport-res__next-season").one('click', function() {
+            if (match < 38) {
+                match = match + 1;
+                newsLookUp(match, 'next');
+            }
+        });
+    }
+
+    function less(match) {
+        $(".MB__sport-res__last-season").one('click', function() {
+            if (match > 0) {
+                match = match - 1;
+                newsLookUp(match, 'less');
+            }
+        });
+    }
+
+    if (func === 'more') {
+        more(match);
+    } else if (func === 'less') {
+        less(match);
+    } else {
+        more(match);
+        less(match);
+    }
 
     (() => {
 
-        let sportsDataArray = [];
+        let sportsDataArray = [],
+            round,
+            played = '(has been played)';
+
         (() => {
-            jsonSport.rounds[matches - 1].matches.map((x) => {
+            jsonSport.rounds[match].matches.map((x) => {
+                let theScore1;
+                let theScore2;
+
+                (function () {
+                    if (x.score1 === null) {
+                        theScore1 = ' ';
+                        played = '(being played or to played)';
+                    } else {
+                         theScore1 = ' ' + x.score1 + ' ';
+                    };
+                    if (x.score2 === null) {
+                        theScore2 = ' ';
+                    } else {
+                         theScore2 = ' ' +  x.score2 + ' ' ;
+                    };
+                })();
+
+                round = 'Round ' + match + ' ' + played;
+
                 sportsDataArray.push(x.team1.name);
-                sportsDataArray.push(x.score1);
-                sportsDataArray.push(' vs ')
+                sportsDataArray.push(theScore1);
+                sportsDataArray.push(' vs ');
                 sportsDataArray.push(x.team2.name);
-                sportsDataArray.push(x.score2 + '  |  ');
+                sportsDataArray.push(theScore2);
+                sportsDataArray.push('  |  ');
             })
         })();
-        // console.log(sportsDataArray)
+
+          ReactDOM.render(<div>{round}</div>,
+               document.getElementById('MB__sport-res__rounds'));
+
           ReactDOM.render(<div>{sportsDataArray}</div>,
                document.getElementById('MB__sport-res'));
 
       })();
 
-    // this will relly on consistant data format
-    var twitterResults = function() {
-        var data = ""; // add twitter data here
-        var matchName = ""; // regex to match name
-        var getExraInfo = function(pasreData) {  // split useful info
-            var data = pasreData;
-            // build for map function
-            data.map();
-        }; // extar info
-        getExraInfo = getExraInfo(matchName);
-        var transformToHTML = "<div><span>" + getExraInfo + "</span></div>";
-        // need to add to dom
-        $(".MB__input__name").appned();
-    };
-
-    var aFunctionForNewsSites = function() {
-        var newsdata = "",
-            newsdata = toArray(newsdata),
-            interesting = function() {
-                return;
-            };
-        // use a map function here
-        function ifAnythingInteresting() {
-            for (var i = 0; i < newsdata.length; i++) {
-                if (newsdata[i] === interesting) {
-                    newsdata[i]
-                }
-            }
-        }
-    };
 };
 
-newsLookUp();
+newsLookUp(match);
