@@ -71,10 +71,10 @@ export function newsLookUp(match, func = 'both') {
             })
         })();
 
-          ReactDOM.render(<div>{round}</div>,
+          ReactDOM.render(<div><span>{round}</span></div>,
                document.getElementById('MB__sport-res__rounds'));
 
-          ReactDOM.render(<div>{sportsDataArray}</div>,
+          ReactDOM.render(<div><span>{sportsDataArray}</span></div>,
                document.getElementById('MB__sport-res'));
 
       })();

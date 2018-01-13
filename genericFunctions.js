@@ -77,23 +77,25 @@ export function howMuchForEach(howmuch, x, y, z) {
         fav = threeOutput;
     }
 
-    (fav, other1, other2) => {
+    ((favIn, other1In, other2In) => {
 
-        let leastFav = Math.max(x, y, z);
+        let leastFav = Math.max(x, y, z),
+            per1,
+            per2;
 
         if (leastFav === other1) {
-            let per1 = (35 / 100) * other1,
-                per2 = (25 / 100) * other2;
+            per1 = (75 / 100) * other1In;
+            per2 = (25 / 100) * other2In;
         } else {
-            let per1 = (25 / 100) * other1,
-                per2 = (35 / 100) * other2;
+            per1 = (25 / 100) * other1In;
+            per2 = (75 / 100) * other2In;
         }
 
-        other1 = other1 - per1;
-        other2 = other2 - per2;
-        fav = fav + (per1 + per2);
+        other1 = other1In - per1; // update outer vars
+        other2 = other2In - per2; // update outer vars
+        fav = favIn + (per1 + per2); // update outer vars
 
-    };
+    })(fav, other1, other2);
 
     if (x === fav) {
         one = fav;
@@ -116,7 +118,7 @@ export function howMuchForEach(howmuch, x, y, z) {
 function createPer(x) {
     // const y = x.split('/');
     // return parseInt(y[0], 10) / parseInt(y[1], 10);
-    return eval(x);
+    return eval(x); // direct eval needs updating
 }
 
 // turn fractions into presentages num to 100 - important - this is not the actual sum not for calculating results -- for working out bet amounts
@@ -177,15 +179,16 @@ export function finalWinnings(el) {
 
 }
 
+
 export function prdictedWinnings(first, second, third, firstAmmount, secondAmmount, thirdAmmount, amountBet) {
 
     // first, second, third, = the percents
     // firstAmmount, secondAmmount, thirdAmmount, = bet amounts
     // amountBet = total amount bet
 
-    console.log(first + 'second');
+    console.log(first + 'first');
     console.log(second + 'second');
-    console.log(third + 'second');
+    console.log(third + 'third');
 
     // returns
     // what the most likely bet persentage is 0
@@ -203,16 +206,13 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
                 argNum = 2;
             }
 
-            console.log(amount);
-            console.log(min + ',' + argNum);
-            console.log(min + ',' + per[argNum]);
-            console.log((min * per[argNum]) * 10);
-
             if ((min * per[argNum]) > amount) {
                 doesAmountCoverOtherBets = true;
             } else {
                 doesAmountCoverOtherBets = false;
             }
+
+            console.log([per[argNum], argNum, doesAmountCoverOtherBets]);
 
         return [per[argNum], argNum, doesAmountCoverOtherBets];
 
@@ -259,6 +259,8 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
         let collectRes = [],
             collect = [];
 
+        const betammount = parseInt(aBet);
+
         function chechD(x, y, z, xx, yy, zz, num) {
 
             collect[num] = [];
@@ -277,7 +279,14 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
 
         chechD(one, two, three, fAmt, sAmt, tAmt, 0);
 
-        return [collect[0] > aBet && collect[1] > aBet && collect[2] > aBet];
+        console.log(one, two, three, fAmt, sAmt, tAmt, aBet);
+        console.log('areAllBetsCovered');
+        console.log(betammount);
+        console.log(collect[0]);
+        console.log(collect[1]);
+        console.log(collect[2]);
+
+        return [collect[0] > betammount && collect[1] > betammount && collect[2] > betammount];
 
     }
 
@@ -312,33 +321,47 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
     // true if all bets are within the reach of the largest odds
     function howSimularAreTheOdds(first, second, third) {
 
+        // make a var containing a number so can easily up and down
+
         const largetNum = Math.max(first, second, third),
             smallestNum = Math.min(first, second, third),
 
             one = Math.abs(first - second),
             two = Math.abs(second - third),
-            three = Math.abs(third - first);
+            three = Math.abs(third - first),
+            differance = largetNum / 4, // either up differance or shrink margin if this is yes to often
+            margin = 0.5;
 
-        if (one < smallestNum && two < smallestNum && three < smallestNum) {
-            return true;
-        } else {
+            console.log('howSimularAreTheOdds');
+            console.log(one * differance);
+            console.log(two * differance);
+            console.log(three * differance);
+            console.log(margin);
+
+        if ((one * differance) > margin && (two * differance) > margin && (three * differance) > margin) {
             return false;
+        } else {
+            return true;
         }
 
     }
 
     // returns
     // true or false = 0
-    // needs to return which one has a chance = 1
-    // needs to return odds = 2
+    // which one has a chance = 1
+    // odds = 2
     function doesTheOutsiderHaveAchance(x, y, z) {
 
         let hasChance,
             argNum = null,
             odds,
-
             mostUnlikely = Math.max(x, y, z),
             mostLikely = Math.min(x, y, z);
+
+            console.log('doesTheOutsiderHaveAchance');
+            console.log(Math.abs(mostUnlikely) < (mostLikely / 2), 'Math.abs(mostUnlikely) < (mostLikely / 2)');
+            console.log(Math.abs(mostUnlikely));
+            console.log((mostLikely / 4));
 
         if (Math.abs(mostUnlikely) < (mostLikely / 4)) {
             hasChance = true;
@@ -370,7 +393,7 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
     return [areallcovered, bestPosOutcome, mostLikley, doesABetCoverAll, howSimularOdds, outsiderChance];
 }
 
-export function shouldYouBet(predictedOutcome, HowMuchSpend) {
+export function shouldYouBet(predictedOutcome, HowMuchSpend) { // always returns no
 
     // will be renamed when we rename functions
     const areAllBetsCovered = predictedOutcome[0],
@@ -386,26 +409,41 @@ export function shouldYouBet(predictedOutcome, HowMuchSpend) {
 
     // no
     const no1 = howSimularOdds,  // how simular are odds we want to be not simular = false
-            no2 = outsiderChance[0], // we dont want the outside to have a chance = false
-
-        // risky
-        risky1 = mostLikley[2] && (outsiderChance[1] !== mostLikley[1]), // is most likely larger than other best
+            no2 = outsiderChance[0], // we dont want the outside to have a chance = false // ******************* are we only going to bet on the favorite
 
         // yes
         yes1 = mostLikley[2], // does most likely cover other bets
+            yes1andGoodYeld = true,
             yes2 = mostLikley[1] === bestPosOutome[0], // does most likely equal best outcome
-            yes3 = areAllBetsCovered[0], // do all best cover amount bet
-        yes4 = mostLikley[2] && outsiderChance[0], // does most likely cover bet and outside has a cnace
-            yes5 = (outsiderChance[2] - mostLikley[0]) < (mostLikley[0] / 2);  // is outside chance odds - most likly chance ods more than most likly divded by 2s
+            yes3 = areAllBetsCovered[0], // do all best cover amount bet // **************** we are flitering out outsider chance will never get here
+        yes4 = mostLikley[2]  && outsiderChance[0], // does most likely cover bet and outside has a chnace // **************** we are flitering out outsider chance will never get here
+            yes5 = (outsiderChance[2] - mostLikley[0]) < (mostLikley[0] / 2),  // is outside chance odds - most likly chance ods more than most likly divded by 2 // // **************** this is just way to confusing simplify
 
-            console.log(mostLikley);
+
+
+            // risky
+            risky1 = mostLikley[2] && (outsiderChance[1] !== mostLikley[1]); // is most likely larger than other best
+
+console.log(no1, no2, 'no1, no2');
+console.log(yes1, mostLikley, 'yes1');
+console.log(yes2, yes3, mostLikley, bestPosOutome, areAllBetsCovered, 'yes2, yes3');
+console.log(yes4, yes5, mostLikley, outsiderChance,  'yes4, yes5');
+console.log(risky1, 'risky1');
+
+console.log(areAllBetsCovered, 'areAllBetsCovered');
+
 
     if (no1 || no2) {
         return 'no dont bet';
-    }  else if (yes1 && (yes2 || yes3)) {
-        return 'yep bet';
-    } else if (yes4 && yes5) {
-        return 'yep bet';
+    } else if (yes1) {
+        // if () {
+        //
+        // }
+        return 'yes bet - betting on most likly';
+    }  else if (yes2 && yes3) {
+        return 'yes bet - strong bet';
+    }   else if (yes4 && yes5) {
+        return 'yes bet - bit confusing';
     } else if (risky1) {
         return 'this is a risky bet';
     } else {

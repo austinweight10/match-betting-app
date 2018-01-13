@@ -1,11 +1,13 @@
 // get open sans
 
 // colours
-$blue: #2496bb;
-$green: #c1ff3c;
-$darkblue: #186680;
+$blue: #59c0cb;
+$yellow: #ffdc00;
+$darkblue: #59c0cb;
+$lightgrey: #9b9b9b;
 $lightgrey: #9b9b9b;
 $red: #fa563f;
+$green: #63c300;
 
 body {
     // add font
@@ -15,17 +17,18 @@ body {
 h1, h2, h3, h4 {
     text-align: left;
     text-transform: uppercase;
-    font-family: sans-serif;
+    font-family: 'Open Sans', sans-serif;
+}
+
+p, span, label {
+    font-family: 'Open Sans', sans-serif;
 }
 
 h1 {
     font-size: 24px;
     letter-spacing: 1px;
     padding: 0 30px;
-    span {
-        font-size: 16px;
-        letter-spacing: 0.6px;
-    }
+    font-weight: bold;
 }
 h2 {
     font-size: 18px;
@@ -43,16 +46,27 @@ h4 {
     display: block;
 }
 
-p, span, label {
+p {
     font-size: 14px;
+    letter-spacing: 0.8px;
+    padding-bottom: 1px;
+}
+
+span, label {
+    font-size: 12px;
     letter-spacing: 1px;
     padding-bottom: 2px;
 }
 
 input {
     margin: auto;
-    border-color: $green;
+    border-color: $yellow;
     padding: 5px;
+    border-style: solid;
+}
+
+input:focus, textarea:focus, button:focus {
+    outline: none;
 }
 
 .MB {
@@ -65,8 +79,21 @@ input {
     border: 10px solid $darkblue;
     .MB__header {
         width: 100%;
+        text-align: center;
         p {
             padding: 30px;
+        }
+        h1, h2 {
+          text-align: center;
+        }
+        h2 {
+          line-height: 20px;
+          font-size: 16px;
+          letter-spacing: 0.6px;
+          padding: 0 30px;
+        }
+        .MB__header__img {
+          padding-bottom: 30px;
         }
     }
 
@@ -135,6 +162,9 @@ input {
             width: 100%;
             div {
                 columns: 2;
+                &.MB__prev-res__res__win-details {
+                  columns: 1;
+                }
             }
             span {
                 display: block;
@@ -144,6 +174,14 @@ input {
                     padding-left: 5px;
                     font-weight: 600;
                     font-style: italic;
+                }
+            }
+            .MB__prev-res__res__winnings {
+                span {
+                    color: $red;
+                    &.MB__prev-res__res__winnings__win {
+                      color: $green;
+                    }
                 }
             }
             .MB__prev-res__res__recomendation, .MB__prev-res__res__howfull, .MB__prev-res__res__the-odds, .MB__prev-res__res__how-much, .MB__prev-res__res__the-ammounts, .MB__prev-res__res__ammounts3, .MB__prev-res__res__was-recomended, .MB__prev-res__res__res1, .MB__prev-res__res__res2, .MB__prev-res__res__res3 {
@@ -162,23 +200,31 @@ input {
                 .MB__prev-res__res__how-much, .MB__prev-res__res__the-ammounts, .MB__prev-res__res__ammounts3, .MB__prev-res__res__was-recomended, .MB__prev-res__res__res1, .MB__prev-res__res__res2, .MB__prev-res__res__res3 {
                     display: inline-block;
                 }
-                .MB__prev-res__res__how-much, .MB__prev-res__res__winnings {
+                .MB__prev-res__res__winnings {
                     span {
                         color: $red;
+                        &.MB__prev-res__res__winnings__win {
+                          color: $green;
+                        }
                     }
                 }
             }
         }
         .MB__prev-res__read-more, .MB__prev-res__delete {
-            margin: 10px 0px 20px;
+            margin: 10px 0px 10px;
             border: none;
             background: white;
             padding: 0;
             border-bottom: 1px solid $blue;
             color: $blue;
+            font-size: 12px;
         }
         .MB__prev-res__delete {
+          margin-top: 20px;
             display: none;
+        }
+        .MB__prev-res__read-more {
+            margin-bottom: 30px;
         }
     }
 
@@ -288,6 +334,27 @@ input {
 
 @media (min-width: 768px) {
     .MB {
+      .MB__header {
+          display: flex;
+          width: 100%;
+          text-align: left;
+          h1, h2{
+            text-align: left;
+          }
+          .MB__header__img, .MB__header__text {
+              width: 33.3%
+          }
+          .MB__header__img {
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            padding-bottom: 0px;
+            img {
+              width: auto;
+              height: fit-content;
+            }
+          }
+      }
         .MB__prev-res {
             width: calc(33.3% - 50px);
         }

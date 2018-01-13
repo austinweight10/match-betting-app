@@ -88,9 +88,9 @@ export function previousRes() {
 
                             </div>
 
-                            <div>
+                            <div className="MB__prev-res__res__win-details">
 
-                                <span className="MB__prev-res__res__winnings">winnings:<span>{winnings()}</span></span>
+                                <span className="MB__prev-res__res__winnings">winnings:<span className={winnings() > 0 ? 'MB__prev-res__res__winnings__win' : ''}>{winnings()}</span></span>
 
                                 <button onClick={deleteCookie} className="MB__prev-res__delete">Delete result</button>
 
