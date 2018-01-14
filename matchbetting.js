@@ -8,8 +8,6 @@ window.Cookies = require("./js.cookie.js");
 // below function creates a prototype
 export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
 
-    console.log(firstBet + ',' + secondBet + ',' + thirdBet + ',' + HowMuchSpend)
-
     // make persenatges
     const firstBetPersentage = makePersentage(firstBet),
         secondBetPersentage = makePersentage(secondBet),
@@ -28,10 +26,6 @@ export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
     const firstBetResult = Math.round(firstAmmount * 100) / 100,
         secondBetResult = Math.round(secondAmmount * 100) / 100,
         thirdBetResult = Math.round(thirdAmmount * 100) / 100;
-
-        console.log(firstAmmount + 'first');
-        console.log(secondAmmount + 'first');
-        console.log(thirdAmmount + 'first');
 
     const isItRight = shouldYouBet(prdictedWinnings(firstAmmount, secondAmmount, thirdAmmount, firstBetPersentage, secondBetPersentage, thirdBetPersentage, HowMuchSpend), HowMuchSpend);
 
@@ -90,8 +84,6 @@ export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
                 }
 
                 saveResults(event) {
-
-                    console.log('values need to be set ver no etc..');
 
                     const setCookie = Cookies.get();
 

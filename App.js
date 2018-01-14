@@ -34,7 +34,6 @@ class App extends React.Component {
     }
 
     submitform(event) {
-        console.log('values are preset');
         var results = new MB(this.inputs.first, this.inputs.SecondBet, this.inputs.ThirdBet, this.inputs.HowMuch);
     }
 
