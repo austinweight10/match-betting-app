@@ -222,8 +222,6 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
             argNum = 0,
             doesAmountCoverOtherBets;
 
-            console.log(min)
-
             if (min === y) {
                 argNum = 1;
             } else if (min === z) {
@@ -235,7 +233,6 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
             } else {
                 doesAmountCoverOtherBets = false;
             }
-
 
         return [per[argNum], argNum, doesAmountCoverOtherBets];
 
@@ -296,6 +293,9 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
 
     }
 
+
+//  need to take into account more than one result thi sneed to be an array not just a string on comparison
+
     // returns
     // true or false if one does = 0
     // need to know which ones arg = 1
@@ -305,43 +305,41 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
         let bet1 = one[0] * one[1],
             bet2 = two[0] * two[1],
             bet3 = three[0] * three[1],
+            doesIt = true,
+            argnm = [],
+            amountToBeWon,
+            amoutReturned = [bet1, bet2, bet3],
+            betsArray = [bet1, bet2, bet3],
+            theMostLikely = mostLikely(firstAmmount, secondAmmount, thirdAmmount, [first, second, third], amountBet)[1],
+            mostLikeInArray = false;
 
-            doesIt,
-            argnm,
-            amountToBeWon;
-
-        let amoutReturned = [bet1, bet2, bet3];
-
-        if (bet1 > amtBet || bet2 > amtBet || bet3 > amtBet) {
-            doesIt = true;
-            if (bet1 > amtBet) {
-                argnm = 0;
-            } else if (bet2 > amtBet) {
-                argnm = 1;
-            } else if (bet3 > amtBet) {
-                argnm = 2;
-            }
-        } else {
-            argnm = null;
-            doesIt = false;
-        }
+        (function () {
+            betsArray.map((bet, i) => {
+                if (bet > amtBet) {
+                    argnm.push(i)
+                } else {
+                    doesIt = false;
+                }
+            })
+        })();
         // ** check if any bets cover whole
 
         // ** is same as most likely
-          let theMostLikely = mostLikely(firstAmmount, secondAmmount, thirdAmmount, [first, second, third], amountBet)[1];
+        if (argnm.length) {
+            argnm.map((x) => {
+                if (x === theMostLikely) {
+                    mostLikeInArray = true;
+                }
+            })
+        }
 
-          console.log(doesIt, 'doesIt')
-          console.log(amoutReturned[argnm], 'amoutReturned[argnm]')
-          console.log((amtBet + ((30 / 100) * amtBet)), '(amtBet + ((30 / 100) * amtBet)')
-          console.log(amoutReturned[argnm] > (amtBet + ((30 / 100) * amtBet)))
-
-          if (doesIt && theMostLikely === argnm && amoutReturned[argnm] > (parseInt(amtBet) + ((30 / 100) * parseInt(amtBet)))) {
+        if (mostLikeInArray && amoutReturned[theMostLikely] > (parseInt(amtBet) + ((30 / 100) * parseInt(amtBet)))) {
             // ** how much is return compared to whole
             amountToBeWon = true
             // ** how much is return compared to whole
-          } else {
+        } else {
             amountToBeWon = false;
-          }
+        }
         // ** is same as most likely
 
         return [doesIt, argnm, amountToBeWon];
@@ -393,34 +391,41 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
 
     // // returns
     // // do all best cover full amount = 3
-    // function areAllBetsCovered(one, two, three, fAmt, sAmt, tAmt, aBet) {
-    //
-    //     let collectRes = [],
-    //         collect = [];
-    //
-    //     const betammount = parseInt(aBet);
-    //
-    //     function chechD(x, y, z, xx, yy, zz, num) {
-    //
-    //         collect[num] = [];
-    //         collect[num].push(x * xx);
-    //         collect[num][0] = collect[num][0] - yy;
-    //         collect[num][0] = collect[num][0] - zz;
-    //
-    //         if (num === 2) {
-    //             return collect;
-    //         }
-    //
-    //         num = num + 1;
-    //
-    //         chechD(y, z, x, yy, zz, xx, num);
-    //     }
-    //
-    //     chechD(one, two, three, fAmt, sAmt, tAmt, 0);
-    //
-    //     return [collect[0] > betammount && collect[1] > betammount && collect[2] > betammount];
-    //
-    // }
+    function areAllBetsCovered(one, two, three, fAmt, sAmt, tAmt, aBet) {
+
+        let collectRes = [],
+            collect = [];
+
+        const betammount = parseInt(aBet);
+
+        function chechD(x, y, z, xx, yy, zz, num) {
+
+            collect[num] = [];
+            collect[num].push(x * xx);
+            collect[num][0] = collect[num][0] - yy;
+            collect[num][0] = collect[num][0] - zz;
+
+            console.log(collect[num])
+
+            if (num === 2) {
+                return collect;
+            }
+
+            num = num + 1;
+
+            chechD(y, z, x, yy, zz, xx, num);
+        }
+
+        chechD(one, two, three, fAmt, sAmt, tAmt, 0);
+
+        console.log(collect[0])
+        console.log(collect[1])
+        console.log(collect[2])
+        console.log(betammount)
+
+        return [collect[0] > betammount && collect[1] > betammount && collect[2] > betammount];
+
+    }
 
     return [
       bestPosOutome([first, firstAmmount], [second, secondAmmount], [third, thirdAmmount], amountBet),
@@ -428,7 +433,7 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
       howSimularAreTheOdds(first, second, third),
       MostLikelyBuyALot([first, firstAmmount], [second, secondAmmount], [third, thirdAmmount], amountBet),
       doesAnyOfTheOutsidersHaveAchance(first, second, third),
-      // areAllBetsCovered(first, second, third, firstAmmount, secondAmmount, thirdAmmount, amountBet)
+      areAllBetsCovered(first, second, third, firstAmmount, secondAmmount, thirdAmmount, amountBet)
     ];
 }
 
@@ -440,19 +445,19 @@ export function shouldYouBet(predictedOutcome, HowMuchSpend) {
         MostLikelyBuyALot = predictedOutcome[3],
         doesAnyOfTheOutsidersHaveAchance = predictedOutcome[4];
 
+
+    // areAllBetsCovered NNED TO COMPLETE THIS FUNCTION
+    console.log(predictedOutcome[5])
+
     // yes = mosty likely very likly and return on it is good
     // risky = odds are fairly simular but good returns on most likely
     // no = odds are simular and ods are not very good
 
-    const mostLikelyWinsAndBuyALot = mostLikely[2] && MostLikelyBuyALot[2];
-    // no
-    const no = howSimularAreTheOdds || !mostLikely[2];
-    const risky = howSimularAreTheOdds && mostLikelyWinsAndBuyALot;
-    const yes = mostLikelyWinsAndBuyALot && !doesAnyOfTheOutsidersHaveAchance[0];
-
-    console.log(mostLikely[2])
-    console.log(MostLikelyBuyALot[2])
-    console.log(!doesAnyOfTheOutsidersHaveAchance[0])
+    const mostLikelyWinsAndBuyALot = mostLikely[2] && MostLikelyBuyALot[2],
+            no = howSimularAreTheOdds || !mostLikely[2],
+            risky = howSimularAreTheOdds && mostLikelyWinsAndBuyALot,
+            yes = mostLikelyWinsAndBuyALot && !doesAnyOfTheOutsidersHaveAchance[0],
+            usersChoose = mostLikely[2];
 
     if (no) {
         return 'no dont bet';
@@ -460,9 +465,10 @@ export function shouldYouBet(predictedOutcome, HowMuchSpend) {
         return 'risky bet';
     } else if (yes) {
         return 'yes bet';
+    } else if (usersChoose) {
+        return 'you choose';
     } else {
         return 'no dont think so';
     }
-
 
 }

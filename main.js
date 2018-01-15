@@ -9,7 +9,6 @@
 
 // --------------------- focus on ---------------------
 
-// update all variable names
 // spend some time entering real past results and odds and see if it works
 // up to date footbal data // not most important just check git
 
