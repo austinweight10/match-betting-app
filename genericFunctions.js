@@ -278,14 +278,22 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
 
         const largetNum = Math.max(first, second, third),
             smallestNum = Math.min(first, second, third),
-
+            midNumArray = [first, second, third],
             one = Math.abs(first - second),
             two = Math.abs(second - third),
             three = Math.abs(third - first),
-            differance = largetNum / 4, // either up differance or shrink margin if this is yes to often
-            margin = 0.5;
+            differance = largetNum / 5.9, // 6.5 either shrink differance or up margin if this is yes to often
+            margin = 89, // 90 relys on 100 bet
+            secondLimitTop = largetNum / 9, // 8.2
+            secondLimitBottom = largetNum / 7; // 4.5
 
-        if ((one * differance) > margin && (two * differance) > margin && (three * differance) > margin) {
+            midNumArray.filter((x) => {
+                if (largetNum !== x || smallestNum !== x) {
+                    return true;
+                }
+            })
+
+        if ((one * differance) > margin && (two * differance) > margin && (three * differance) > margin && midNumArray[0] > secondLimitTop && midNumArray[0] < secondLimitBottom) {
             return false;
         } else {
             return true;
@@ -405,7 +413,7 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
             collect[num][0] = collect[num][0] - yy;
             collect[num][0] = collect[num][0] - zz;
 
-            console.log(collect[num])
+            // console.log(collect[num])
 
             if (num === 2) {
                 return collect;
@@ -418,10 +426,10 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
 
         chechD(one, two, three, fAmt, sAmt, tAmt, 0);
 
-        console.log(collect[0])
-        console.log(collect[1])
-        console.log(collect[2])
-        console.log(betammount)
+        // console.log(collect[0])
+        // console.log(collect[1])
+        // console.log(collect[2])
+        // console.log(betammount)
 
         return [collect[0] > betammount && collect[1] > betammount && collect[2] > betammount];
 
@@ -433,7 +441,7 @@ export function prdictedWinnings(first, second, third, firstAmmount, secondAmmou
       howSimularAreTheOdds(first, second, third),
       MostLikelyBuyALot([first, firstAmmount], [second, secondAmmount], [third, thirdAmmount], amountBet),
       doesAnyOfTheOutsidersHaveAchance(first, second, third),
-      areAllBetsCovered(first, second, third, firstAmmount, secondAmmount, thirdAmmount, amountBet)
+    //   areAllBetsCovered(first, second, third, firstAmmount, secondAmmount, thirdAmmount, amountBet)
     ];
 }
 
@@ -446,8 +454,8 @@ export function shouldYouBet(predictedOutcome, HowMuchSpend) {
         doesAnyOfTheOutsidersHaveAchance = predictedOutcome[4];
 
 
-    // areAllBetsCovered NNED TO COMPLETE THIS FUNCTION
-    console.log(predictedOutcome[5])
+    // areAllBetsCovered NEED TO COMPLETE THIS FUNCTION
+    // console.log(predictedOutcome[5])
 
     // yes = mosty likely very likly and return on it is good
     // risky = odds are fairly simular but good returns on most likely

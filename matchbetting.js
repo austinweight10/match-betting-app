@@ -115,7 +115,7 @@ export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
 
                              <h4>THE RECOMENDATION</h4>
 
-                             <span>What the recomended bet is:<span>{isItRight}</span></span>
+                             <span>What the recomended bet is:<span className="MB__ShouldBet">{isItRight}</span></span>
 
                              <h4>THE AMOUNTS TO BET</h4>
 
@@ -138,7 +138,7 @@ export function MB(firstBet, secondBet, thirdBet, HowMuchSpend) {
                                      <span className="MB__recomendations__info">(Please chose a name for your bet. Make it diffferent from other bet names.)</span>
                                  </span>
 
-                                 <input onChange={this.betName}/>
+                                 <input className="MB__recomendations__bet-name" onChange={this.betName}/>
 
                                  <span onClick={this.saveResults} className="MB__input__con__store">store results</span>
                              </div>
